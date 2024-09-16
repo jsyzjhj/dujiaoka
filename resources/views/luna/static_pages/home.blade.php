@@ -1,7 +1,11 @@
 @extends('luna.layouts.default')
 
 @section('notice')
-    @include('luna.layouts._notice')
+    @include('luna.layouts._notice_xs')
+@endsection
+
+@section('notice_min')
+    @include('luna.layouts._notice_sm')
 @endsection
 
 @section('content')
@@ -28,7 +32,9 @@
                         </svg>
                         <span>{{ __('luna.home_choice_cate') }}</span>
                     </div>
-                    <div class="cate"></div>
+                    <div class="cate">
+
+                    </div>
                     <div class="goods">
                         <p class="title-2">
                             <svg t="1602925988984" class="icon" viewBox="0 0 1024 1024"
@@ -96,7 +102,6 @@
 
     <script>
         let title    = "{{ __('dujiaoka.site_announcement') }}",
-            tipsCon  = '{!! str_replace(["\r\n", "\r", "\n"], "", dujiaoka_config_get('notice')); !!}',
             goodsMsg = {!! json_encode($data) !!};
     </script>
 @endsection

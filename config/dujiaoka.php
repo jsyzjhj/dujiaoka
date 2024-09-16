@@ -8,15 +8,16 @@
  */
 
 return [
-    'dujiaoka_version' => '2.0.0',
+    'dujiaoka_version' => '2.0.6',
     // 模板集合
     'templates' => [
-        'layui' => 'Layui',
+        'unicorn' => '官方[unicorn-独角兽]',
         'luna' => 'Luna[Julyssn]',
         'hyper' => 'hyper[Bimoe]'
     ],
     // 语言
     'language' => [
-        'zh_CN' => '简体中文'
+        'zh_CN' => '简体中文',
+        'zh_TW' => '繁体中文',
     ],
 ];

@@ -1,4 +1,4 @@
-@extends('luna.layouts.default')
+@extends('luna.layouts.seo')
 
 @section('notice')
     @include('luna.layouts._notice')
@@ -202,7 +202,7 @@
                                                     <input type="text" name="{{ $ipu['field'] }}"
                                                            @if($ipu['rule'] !== false) required lay-verify="required"
                                                            @endif
-                                                           placeholder="{{ $ipu['desc'] }}">
+                                                           placeholder="{{ $ipu['placeholder'] }}">
                                                 </label>
                                             </div>
                                         @endif

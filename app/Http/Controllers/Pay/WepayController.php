@@ -28,7 +28,7 @@ class WepayController extends PayController
             $order = [
                 'out_trade_no' => $this->order->order_sn,
                 'total_fee' => bcmul($this->order->actual_price, 100, 0),
-                'body' => $this->order->title
+                'body' => $this->order->order_sn
             ];
             switch ($payway){
                 case 'wescan':
@@ -64,6 +64,9 @@ class WepayController extends PayController
         }
         $payGateway = $this->payService->detail($order->pay_id);
         if (!$payGateway) {
+            return 'error';
+        }
+        if($payGateway->pay_handleroute != '/pay/wepay'){
             return 'error';
         }
         $config = [

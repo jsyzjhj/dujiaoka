@@ -59,7 +59,7 @@ class MailSend implements ShouldQueue
         $title = $this->title;
         $sysConfig = cache('system-setting');
         $mailConfig = [
-            'driver' => $sysConfig['driver'] ?? 'stmp',
+            'driver' => $sysConfig['driver'] ?? 'smtp',
             'host' => $sysConfig['host'] ?? '',
             'port' => $sysConfig['port'] ?? '465',
             'username' => $sysConfig['username'] ?? '',
@@ -68,7 +68,7 @@ class MailSend implements ShouldQueue
                 'name'      =>  $sysConfig['from_name'] ?? '独角发卡'
             ],
             'password' => $sysConfig['password'] ?? '',
-            'encryption' => $sysConfig['encryption'] ?? 'ssl'
+            'encryption' => $sysConfig['encryption'] ?? ''
         ];
         $to = $this->to;
         //  覆盖 mail 配置

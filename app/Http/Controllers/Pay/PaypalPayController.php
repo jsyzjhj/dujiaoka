@@ -40,22 +40,22 @@ class PaypalPayController extends PayController
             $paypal->setConfig(['mode' => 'live']);
             $product = $this->order->title;
             // 得到汇率
-            $price = Currency::convert()
+            $total = Currency::convert()
                 ->from('CNY')
                 ->to('USD')
                 ->amount($this->order->actual_price)
+                ->round(2)
                 ->get();
             $shipping = 0;
             $description = $this->order->title;
-            $total = bcadd($price, $shipping, 2); //总价
             $payer = new Payer();
             $payer->setPaymentMethod('paypal');
             $item = new Item();
-            $item->setName($product)->setCurrency(self::Currency)->setQuantity($this->order->buy_amount)->setPrice($price);
+            $item->setName($product)->setCurrency(self::Currency)->setQuantity(1)->setPrice($total);
             $itemList = new ItemList();
             $itemList->setItems([$item]);
             $details = new Details();
-            $details->setShipping($shipping)->setSubtotal($price);
+            $details->setShipping($shipping)->setSubtotal($total);
             $amount = new Amount();
             $amount->setCurrency(self::Currency)->setTotal($total)->setDetails($details);
             $transaction = new Transaction();
@@ -85,7 +85,7 @@ class PaypalPayController extends PayController
         $orderSN = $request->input('orderSN');
         if ($success == 'no' || empty($paymentId) || empty($payerID)) {
             // 取消支付
-           redirect(url('detail-order-sn', ['orderSN' => $payerID]));
+            redirect(url('detail-order-sn', ['orderSN' => $payerID]));
         }
         $order = $this->orderService->detailOrderSN($orderSN);
         if (!$order) {
@@ -93,6 +93,9 @@ class PaypalPayController extends PayController
         }
         $payGateway = $this->payService->detail($order->pay_id);
         if (!$payGateway) {
+            return 'error';
+        }
+        if($payGateway->pay_handleroute != '/pay/paypal'){
             return 'error';
         }
         $paypal = new ApiContext(

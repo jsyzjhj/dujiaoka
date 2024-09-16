@@ -17,7 +17,7 @@ class PayjsController extends PayController
             $this->loadGateWay($orderSN, $payway);
             // 构造订单基础信息
             $data = [
-                'body' => $this->order->title,                                // 订单标题
+                'body' => $this->order->order_sn,                                // 订单标题
                 'total_fee' => bcmul($this->order->actual_price, 100, 0),    // 订单金额
                 'out_trade_no' => $this->order->order_sn,                           // 订单号
                 'notify_url' => url($this->payGateway->pay_handleroute . '/notify_url'),
@@ -56,6 +56,9 @@ class PayjsController extends PayController
         $payGateway = $this->payService->detail($order->pay_id);
         if (!$payGateway) {
             return 'error';
+        }
+        if($payGateway->pay_handleroute != '/pay/payjs'){
+            return 'fail';
         }
         config(['payjs.mchid' => $payGateway->merchant_id, 'payjs.key' => $payGateway->merchant_pem]);
         $notify_info = Payjs::notify();

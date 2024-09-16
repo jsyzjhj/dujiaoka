@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use App\Admin\Actions\Post\BatchRestore;
 use App\Admin\Actions\Post\Restore;
 use App\Admin\Repositories\Goods;
+use App\Models\Carmis;
 use App\Models\Coupon;
 use App\Models\GoodsGroup as GoodsGroupModel;
 use Dcat\Admin\Admin;
@@ -30,6 +31,8 @@ class GoodsController extends AdminController
             $grid->column('id')->sortable();
             $grid->column('picture')->image('', 100, 100);
             $grid->column('gd_name');
+            $grid->column('gd_description');
+            $grid->column('gd_keywords');
             $grid->column('group.gp_name', admin_trans('goods.fields.group_id'));
             $grid->column('type')
                 ->using(GoodsModel::getGoodsTypeMap())
@@ -39,7 +42,16 @@ class GoodsController extends AdminController
                 ]);
             $grid->column('retail_price');
             $grid->column('actual_price')->sortable();
-            $grid->column('in_stock');
+            $grid->column('in_stock')->display(function () {
+                // 如果为自动发货，则加载库存卡密
+                if ($this->type == GoodsModel::AUTOMATIC_DELIVERY) {
+                    return Carmis::query()->where('goods_id', $this->id)
+                        ->where('status', Carmis::STATUS_UNSOLD)
+                        ->count();
+                } else {
+                    return $this->in_stock;
+                }
+            });
             $grid->column('sales_volume');
             $grid->column('ord')->editable()->sortable();
             $grid->column('is_open')->switch();
@@ -80,6 +92,8 @@ class GoodsController extends AdminController
         return Show::make($id, new Goods(), function (Show $show) {
             $show->id('id');
             $show->field('gd_name');
+            $show->field('gd_description');
+            $show->field('gd_keywords');
             $show->field('picture')->image();
             $show->field('retail_price');
             $show->field('actual_price');
@@ -122,6 +136,8 @@ class GoodsController extends AdminController
         return Form::make(new Goods(), function (Form $form) {
             $form->display('id');
             $form->text('gd_name')->required();
+            $form->text('gd_description')->required();
+            $form->text('gd_keywords')->required();
             $form->select('group_id')->options(
                 GoodsGroupModel::query()->pluck('gp_name', 'id')
             )->required();

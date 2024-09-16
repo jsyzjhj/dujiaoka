@@ -35,14 +35,14 @@ class AlipayController extends PayController
             $order = [
                 'out_trade_no' => $this->order->order_sn,
                 'total_amount' => (float)$this->order->actual_price,
-                'subject' => $this->order->title
+                'subject' => $this->order->order_sn
             ];
             switch ($payway){
                 case 'zfbf2f':
                 case 'alipayscan':
                     try{
                         $result = Pay::alipay($config)->scan($order)->toArray();
-                        $result['payname'] = $this->payGateway->pay_name;
+                        $result['payname'] = $this->order->order_sn;
                         $result['actual_price'] = (float)$this->order->actual_price;
                         $result['orderid'] = $this->order->order_sn;
                         $result['jump_payuri'] = $result['qr_code'];
@@ -53,6 +53,13 @@ class AlipayController extends PayController
                 case 'aliweb':
                     try{
                         $result = Pay::alipay($config)->web($order);
+                        return $result;
+                    } catch (\Exception $e) {
+                        return $this->err(__('dujiaoka.prompt.abnormal_payment_channel') . $e->getMessage());
+                    }
+                case 'aliwap':
+                    try{
+                        $result = Pay::alipay($config)->wap($order);
                         return $result;
                     } catch (\Exception $e) {
                         return $this->err(__('dujiaoka.prompt.abnormal_payment_channel') . $e->getMessage());
@@ -77,6 +84,9 @@ class AlipayController extends PayController
         $payGateway = $this->payService->detail($order->pay_id);
         if (!$payGateway) {
             return 'error';
+        }
+        if($payGateway->pay_handleroute != '/pay/alipay'){
+            return 'fail';
         }
         $config = [
             'app_id' => $payGateway->merchant_id,

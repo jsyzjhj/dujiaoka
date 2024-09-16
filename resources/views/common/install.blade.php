@@ -689,8 +689,8 @@ TkSuQmCC" />
     <div>
 
         <p>每个梦想的路上，一起前行....！
-            <a href="//shang.qq.com/wpa/qunwpa?idkey=37b6b06f7c941dae20dcd5784088905d6461064d7f33478692f0c4215546cee0" id="qq-group-link" target="_blank">
-                <img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="" title="{{ __('dujiaoka.join_qq_group') }}">
+            <a href="https://t.me/dujiaoka" id="qq-group-link" target="_blank">
+                👉🏻加入Telegram交流群
             </a>
         </p>
 
@@ -778,7 +778,7 @@ TkSuQmCC" />
                         .text('安装中...')
                         .prop('disabled', true);
                     var adminurl = $("input[name='admin_path']").val()
-                    $.post('{{ url('/do-install') }}', $(this).serialize())
+                    $.post('/do-install', $(this).serialize())
                         .done(function (ret) {
                             if (ret === 'success') {
                                 $('#error').hide();
